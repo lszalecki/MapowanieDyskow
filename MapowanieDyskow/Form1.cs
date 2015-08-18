@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using aejw.Network;
 using IniParser;
 using IniParser.Model;
+using System.Threading;
 
 namespace MapowanieDyskow
 {
@@ -28,6 +29,7 @@ namespace MapowanieDyskow
         public Form1()
         {
             InitializeComponent();
+
             listView1.View = View.Details;
             listView1.Columns.Add("Dyski sieciowe:", 100);
 
@@ -38,12 +40,14 @@ namespace MapowanieDyskow
             String configINI = Environment.CurrentDirectory + "\\config.ini";
             if (configINI == null)
             {
-                DisplayData(DateTime.Now+": "+"Brak pliku konfiguracyjnego");
+                richTextBoxLog.SelectionFont = new Font(richTextBoxLog.SelectionFont, FontStyle.Bold);
+                richTextBoxLog.AppendText(DateTime.Now+": "+"Brak pliku konfiguracyjnego" + Environment.NewLine);
                 return;
             }
             else
             {
-                DisplayData(DateTime.Now + ": " + "Plik konfiguracyjny załadowany");
+                richTextBoxLog.SelectionFont = new Font(richTextBoxLog.SelectionFont, FontStyle.Bold);
+                richTextBoxLog.AppendText(DateTime.Now + ": " + "Plik konfiguracyjny załadowany" + Environment.NewLine);
             }
 
             parsedData = parser.ReadFile(configINI);
@@ -84,52 +88,71 @@ namespace MapowanieDyskow
             NetworkDrive drive;
             if (!String.IsNullOrEmpty(textBoxUsername.Text) && !String.IsNullOrEmpty(textBoxPassword.Text))
             {
-                foreach (ListViewItem item in listView1.Items)
-                {
-                    if (item.Checked)
-                    {
-                        drive = new NetworkDrive();
-                        drive.Force = true;
-                        drive.LocalDrive = item.Text.ToLower() + ":";
-                        drive.ShareName = keyCol[item.Text.ToLower()];
 
-                        try
-                        {
-                            drive.UnMapDrive();
-                            DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został odmapowany poprawnie.");
+                toolStripProgressBar1.Maximum = listView1.Items.Count;
 
-                        }
-                        catch (Exception ee)
-                        {
-                            Console.WriteLine(ee);
-                        }
+               
+
+                           int count = 0;
+                           foreach (ListViewItem item in listView1.Items)
+                           {
+                               if (item.Checked)
+                               {
+                                   drive = new NetworkDrive();
+                                   drive.Force = true;
+                                   drive.LocalDrive = item.Text.ToLower() + ":";
+                                   string shareName = null;
+                                   if (keyCol[item.Text.ToLower()].Contains("*user*"))
+                                   {
+                                       shareName = keyCol[item.Text.ToLower()].Replace("*user*", textBoxUsername.Text);
+                                   }
+                                   else
+                                   {
+                                       shareName = keyCol[item.Text.ToLower()];
+                                   }
+                                   drive.ShareName = shareName;
+
+                                   try
+                                   {
+                                       drive.UnMapDrive();
+                                       DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został odmapowany poprawnie.");
+
+                                   }
+                                   catch (Exception ee)
+                                   {
+                                       Console.WriteLine(ee);
+                                   }
 
 
-                        try
-                        {
-                            if (checkBoxDomena.Checked)
-                            {
-                                drive.MapDrive(domainName + "\\" + textBoxUsername.Text, textBoxPassword.Text);
-                                DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został zmapowany poprawnie.");
-                            }
-                            else
-                            {
-                                drive.MapDrive(textBoxUsername.Text, textBoxPassword.Text);
-                                DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został zmapowany poprawnie.");
-                            }
+                                   try
+                                   {
+                                       if (checkBoxDomena.Checked)
+                                       {
+                                           drive.MapDrive(domainName + "\\" + textBoxUsername.Text, textBoxPassword.Text);
+                                           DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został zmapowany poprawnie.");
+                                       }
+                                       else
+                                       {
+                                           drive.MapDrive(textBoxUsername.Text, textBoxPassword.Text);
+                                           DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został zmapowany poprawnie.");
+                                       }
 
 
-                        }
-                        catch (Exception ex)
-                        {
-                            // MessageBox.Show(this, "Error: " + ex.Message);                   
-                            Console.WriteLine(ex);
-                            DisplayData(DateTime.Now + ": " + ex.Message);
-                        }
+                                   }
+                                   catch (Exception ex)
+                                   {
+                                       // MessageBox.Show(this, "Error: " + ex.Message);                   
+                                       Console.WriteLine(ex);
+                                       DisplayData(DateTime.Now + ": " + ex.Message);
+                                   }
 
-                    }
+                               }
 
-                }
+                               count++;
+                               UpdateProgressBar(count);
+                           }
+
+                     
             }
             else
             {
@@ -148,6 +171,17 @@ namespace MapowanieDyskow
                 }
             }
   
+        }
+
+
+        public void UpdateProgressBar(int value)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<int>(UpdateProgressBar), new object[] { value });
+                return;
+            }
+            toolStripProgressBar1.Value = value;
         }
 
 
