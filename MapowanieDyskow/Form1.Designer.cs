@@ -32,15 +32,15 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBoxUsername = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBoxPassword = new System.Windows.Forms.TextBox();
-            this.buttonMapuj = new System.Windows.Forms.Button();
-            this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.checkBoxDomena = new System.Windows.Forms.CheckBox();
+            this.buttonMapuj = new System.Windows.Forms.Button();
+            this.textBoxPassword = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBoxUsername = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -76,16 +76,17 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem2});
+            this.toolStripMenuItemClose});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(38, 20);
             this.toolStripMenuItem1.Text = "Plik";
             // 
-            // toolStripMenuItem2
+            // toolStripMenuItemClose
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
-            this.toolStripMenuItem2.Text = "Zamknij";
+            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItemClose.Text = "Zamknij";
+            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // panel1
             // 
@@ -102,60 +103,6 @@
             this.panel1.Size = new System.Drawing.Size(277, 226);
             this.panel1.TabIndex = 3;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(34, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(36, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Login:";
-            // 
-            // textBoxUsername
-            // 
-            this.textBoxUsername.Location = new System.Drawing.Point(73, 25);
-            this.textBoxUsername.Name = "textBoxUsername";
-            this.textBoxUsername.Size = new System.Drawing.Size(171, 20);
-            this.textBoxUsername.TabIndex = 1;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(31, 59);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Hasło:";
-            // 
-            // textBoxPassword
-            // 
-            this.textBoxPassword.Location = new System.Drawing.Point(73, 56);
-            this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(171, 20);
-            this.textBoxPassword.TabIndex = 3;
-            this.textBoxPassword.UseSystemPasswordChar = true;
-            // 
-            // buttonMapuj
-            // 
-            this.buttonMapuj.Location = new System.Drawing.Point(169, 123);
-            this.buttonMapuj.Name = "buttonMapuj";
-            this.buttonMapuj.Size = new System.Drawing.Size(75, 23);
-            this.buttonMapuj.TabIndex = 4;
-            this.buttonMapuj.Text = "Mapuj";
-            this.buttonMapuj.UseVisualStyleBackColor = true;
-            this.buttonMapuj.Click += new System.EventHandler(this.buttonMapuj_Click);
-            // 
-            // richTextBoxLog
-            // 
-            this.richTextBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBoxLog.Location = new System.Drawing.Point(12, 259);
-            this.richTextBoxLog.Name = "richTextBoxLog";
-            this.richTextBoxLog.Size = new System.Drawing.Size(487, 97);
-            this.richTextBoxLog.TabIndex = 5;
-            this.richTextBoxLog.Text = "";
-            // 
             // checkBoxDomena
             // 
             this.checkBoxDomena.AutoSize = true;
@@ -167,6 +114,60 @@
             this.checkBoxDomena.TabIndex = 5;
             this.checkBoxDomena.Text = "Domena";
             this.checkBoxDomena.UseVisualStyleBackColor = true;
+            // 
+            // buttonMapuj
+            // 
+            this.buttonMapuj.Location = new System.Drawing.Point(169, 123);
+            this.buttonMapuj.Name = "buttonMapuj";
+            this.buttonMapuj.Size = new System.Drawing.Size(75, 23);
+            this.buttonMapuj.TabIndex = 4;
+            this.buttonMapuj.Text = "Mapuj";
+            this.buttonMapuj.UseVisualStyleBackColor = true;
+            this.buttonMapuj.Click += new System.EventHandler(this.buttonMapuj_Click);
+            // 
+            // textBoxPassword
+            // 
+            this.textBoxPassword.Location = new System.Drawing.Point(73, 56);
+            this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.Size = new System.Drawing.Size(171, 20);
+            this.textBoxPassword.TabIndex = 3;
+            this.textBoxPassword.UseSystemPasswordChar = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(31, 59);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(39, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Hasło:";
+            // 
+            // textBoxUsername
+            // 
+            this.textBoxUsername.Location = new System.Drawing.Point(73, 25);
+            this.textBoxUsername.Name = "textBoxUsername";
+            this.textBoxUsername.Size = new System.Drawing.Size(171, 20);
+            this.textBoxUsername.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(34, 28);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(36, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Login:";
+            // 
+            // richTextBoxLog
+            // 
+            this.richTextBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxLog.Location = new System.Drawing.Point(12, 259);
+            this.richTextBoxLog.Name = "richTextBoxLog";
+            this.richTextBoxLog.Size = new System.Drawing.Size(487, 97);
+            this.richTextBoxLog.TabIndex = 5;
+            this.richTextBoxLog.Text = "";
             // 
             // Form1
             // 
@@ -196,7 +197,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemClose;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RichTextBox richTextBoxLog;
         private System.Windows.Forms.Button buttonMapuj;

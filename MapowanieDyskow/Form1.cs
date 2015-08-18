@@ -181,6 +181,12 @@ namespace MapowanieDyskow
         }
         #endregion
 
+        private void toolStripMenuItemClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            this.Dispose();
+        }
+
 
 
     }
