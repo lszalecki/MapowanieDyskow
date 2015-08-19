@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.listView1 = new System.Windows.Forms.ListView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,7 +43,6 @@
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -67,6 +68,11 @@
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(150, 16);
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -88,7 +94,7 @@
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
-            this.toolStripMenuItemClose.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(117, 22);
             this.toolStripMenuItemClose.Text = "Zamknij";
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
@@ -121,11 +127,13 @@
             // 
             // buttonMapuj
             // 
-            this.buttonMapuj.Location = new System.Drawing.Point(169, 123);
+            this.buttonMapuj.Image = global::MapowanieDyskow.Properties.Resources.hard_drive_network;
+            this.buttonMapuj.Location = new System.Drawing.Point(144, 122);
             this.buttonMapuj.Name = "buttonMapuj";
-            this.buttonMapuj.Size = new System.Drawing.Size(75, 23);
+            this.buttonMapuj.Size = new System.Drawing.Size(100, 40);
             this.buttonMapuj.TabIndex = 4;
             this.buttonMapuj.Text = "Mapuj";
+            this.buttonMapuj.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.buttonMapuj.UseVisualStyleBackColor = true;
             this.buttonMapuj.Click += new System.EventHandler(this.buttonMapuj_Click);
             // 
@@ -136,6 +144,7 @@
             this.textBoxPassword.Size = new System.Drawing.Size(171, 20);
             this.textBoxPassword.TabIndex = 3;
             this.textBoxPassword.UseSystemPasswordChar = true;
+            this.textBoxPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxPassword_KeyPress);
             // 
             // label2
             // 
@@ -152,6 +161,7 @@
             this.textBoxUsername.Name = "textBoxUsername";
             this.textBoxUsername.Size = new System.Drawing.Size(171, 20);
             this.textBoxUsername.TabIndex = 1;
+            this.textBoxUsername.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxUsername_KeyPress);
             // 
             // label1
             // 
@@ -173,11 +183,6 @@
             this.richTextBoxLog.TabIndex = 5;
             this.richTextBoxLog.Text = "";
             // 
-            // toolStripProgressBar1
-            // 
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(150, 16);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -188,6 +193,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.listView1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Mapowanie dysków";
