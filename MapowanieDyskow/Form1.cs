@@ -87,7 +87,12 @@ namespace MapowanieDyskow
         private void buttonMapuj_Click(object sender, EventArgs e)
         {
 
-            mapujDyski();
+            Thread backgroundThread = new Thread(
+                   new ThreadStart(() =>
+                   {
+                       mapujDyski();
+                   }));
+            backgroundThread.Start();
 
         }
 
@@ -102,6 +107,34 @@ namespace MapowanieDyskow
             toolStripProgressBar1.Value = value;
         }
 
+        public void SetProgresBarMaximum( int value)
+        {
+            this.Invoke(new EventHandler(delegate {
+                toolStripProgressBar1.Maximum = value;
+            }));
+        }
+
+        public ListView GetListView()
+        {
+            listView1.Invoke(new MethodInvoker(delegate
+            {
+                
+            }));
+            return this.listView1;
+        }
+
+        delegate ListView.ListViewItemCollection DelGetItems(ListView listView);
+        ListView.ListViewItemCollection GetItems(ListView listView)
+        {
+            if (listView.InvokeRequired)
+            {
+                return (ListView.ListViewItemCollection)listView.Invoke(new DelGetItems(GetItems), new Object[] { listView });
+            }
+            else
+            {
+                return listView.Items;
+            }
+        }
 
         #region DisplayData
         /// <summary>
@@ -142,72 +175,91 @@ namespace MapowanieDyskow
 
         private void mapujDyski()
         {
+            bool exitWithError = false;
             NetworkDrive drive;
             if (!String.IsNullOrEmpty(textBoxUsername.Text) && !String.IsNullOrEmpty(textBoxPassword.Text))
             {
 
-                toolStripProgressBar1.Maximum = listView1.Items.Count;
+                //toolStripProgressBar1.Maximum = listView1.Items.Count;
+                SetProgresBarMaximum(listView1.Items.Count);
 
                 int count = 0;
-                foreach (ListViewItem item in listView1.Items)
-                {
-                    if (item.Checked)
+                //foreach (ListViewItem item in listView1.Items)
+                this.Invoke(new MethodInvoker(delegate {
+
+                    foreach (ListViewItem item in GetItems(listView1))
                     {
-                        drive = new NetworkDrive();
-                        drive.Force = true;
-                        drive.LocalDrive = item.Text.ToLower() + ":";
-                        string shareName = null;
-                        if (keyCol[item.Text.ToLower()].Contains("*user*"))
+                        if (item.Checked)
                         {
-                            shareName = keyCol[item.Text.ToLower()].Replace("*user*", textBoxUsername.Text);
-                        }
-                        else
-                        {
-                            shareName = keyCol[item.Text.ToLower()];
-                        }
-                        drive.ShareName = shareName;
-
-                        try
-                        {
-                            drive.UnMapDrive();
-                            DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został odmapowany poprawnie.");
-
-                        }
-                        catch (Exception ee)
-                        {
-                            Console.WriteLine(ee);
-                        }
-
-
-                        try
-                        {
-                            if (checkBoxDomena.Checked)
+                            drive = new NetworkDrive();
+                            drive.Force = true;
+                            drive.LocalDrive = item.Text.ToLower() + ":";
+                            string shareName = null;
+                            if (keyCol[item.Text.ToLower()].Contains("*user*"))
                             {
-                                drive.MapDrive(domainName + "\\" + textBoxUsername.Text, textBoxPassword.Text);
-                                DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został zmapowany poprawnie.");
+                                shareName = keyCol[item.Text.ToLower()].Replace("*user*", textBoxUsername.Text);
                             }
                             else
                             {
-                                drive.MapDrive(textBoxUsername.Text, textBoxPassword.Text);
-                                DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został zmapowany poprawnie.");
+                                shareName = keyCol[item.Text.ToLower()];
+                            }
+                            drive.ShareName = shareName;
+
+                            try
+                            {
+                                drive.UnMapDrive();
+                                DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został odmapowany poprawnie.");
+
+                            }
+                            catch (Exception ee)
+                            {
+                                Console.WriteLine(ee);
                             }
 
 
-                        }
-                        catch (Exception ex)
-                        {
-                            // MessageBox.Show(this, "Error: " + ex.Message);                   
-                            Console.WriteLine(ex);
-                            DisplayData(DateTime.Now + ": " + ex.Message);
+                            try
+                            {
+                                if (checkBoxDomena.Checked)
+                                {
+                                    drive.MapDrive(domainName + "\\" + textBoxUsername.Text, textBoxPassword.Text);
+                                    DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został zmapowany poprawnie.");
+                                }
+                                else
+                                {
+                                    drive.MapDrive(textBoxUsername.Text, textBoxPassword.Text);
+                                    DisplayData(DateTime.Now + ": " + "Dysk " + item.Text.ToUpper() + " został zmapowany poprawnie.");
+                                }
+
+
+                            }
+                            catch (Exception ex)
+                            {
+                                // MessageBox.Show(this, "Error: " + ex.Message);                   
+                                //Console.WriteLine( " hashCode = "+ ex.GetHashCode() + "ex.GetBaseEX Code = "+((Win32Exception)ex.GetBaseException()).NativeErrorCode +"  " + ex.Data );
+                                DisplayData(DateTime.Now + ": " + ex.Message);
+
+                                if (((Win32Exception)ex.GetBaseException()).NativeErrorCode == 86 || ((Win32Exception)ex.GetBaseException()).NativeErrorCode == 1326)
+                                {
+                                    DisplayData(DateTime.Now + ": " + "Przerwane.");
+                                    exitWithError = true;
+                                    UpdateProgressBar(0);
+                                    break;
+                                }
+                            }
+
                         }
 
+                        count++;
+                        UpdateProgressBar(count);
                     }
 
-                    count++;
-                    UpdateProgressBar(count);
-                }
+                }));
+            
 
-                DisplayData(DateTime.Now + ": " + " Zakończono.");
+                if (!exitWithError)
+                {
+                    DisplayData(DateTime.Now + ": " + " Zakończono.");
+                }     
 
             }
             else
@@ -232,7 +284,12 @@ namespace MapowanieDyskow
         {
             if (e.KeyChar == (Char)Keys.Enter)
             {
-                mapujDyski();
+                Thread backgroundThread = new Thread(
+                      new ThreadStart(() =>
+                      {
+                          mapujDyski();
+                      }));
+                backgroundThread.Start();
             }
         }
 
@@ -240,7 +297,12 @@ namespace MapowanieDyskow
         {
             if (e.KeyChar == (Char)Keys.Enter)
             {
-                mapujDyski();
+                Thread backgroundThread = new Thread(
+                   new ThreadStart(() =>
+                   {
+                       mapujDyski();
+                   }));
+                backgroundThread.Start();
             }
         }
 
